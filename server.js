@@ -58,21 +58,6 @@ server.post('/user/newuser', function(req, res) {
   con.connect(function(err) {
     if(err) throw err
     console.log("Connected!");
-<<<<<<< HEAD
-    con.query('INSERT INTO User SET ?',user,function (error, results, fields) {
-      if(error){
-        console.log(error.code); // 'ECONNREFUSED'
-        console.log(error.fatal); // true
-        res.send(error.code)
-      }
-      else{
-        console.log('Insert Sucess')
-        res.send('success')
-      }
-    });
-
-=======
->>>>>>> c12299a36464ae781edd63f5d098c06b6035bbe1
   });
   con.query(`INSERT INTO User (UserName,Password,Firstname,Lastname,Email,RegisDate,RoleID) VALUES ('${username}',password('${password}'),'${email}','${firstname}','${lastname}',CURRENT_TIMESTAMP(),${roleID})`,function (error, results, fields) {
     if(error){
