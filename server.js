@@ -32,6 +32,7 @@ server.get('/product/productcat', function(req, res, next) {
     }
     res.send(category)
   })
+  con.end()
 })
 
 
@@ -59,22 +60,13 @@ server.get('/product/:productId',function(req,res){
     }
     res.send(results)
   })
+  con.end()
 })
 
 
 server.post('/user/newuser', function(req, res) {
   const mysql = require('./src/mysql')
   const con = mysql()
-  // console.log('wow', req.body)
-  // const userData = {
-  //   "Username":req.body.username,
-  //   "Password":password(req.body.password),
-  //   "Email":req.body.email,
-  //   "Firstname":req.body.firstname,
-  //   "Lastname":req.body.lastname,
-  //   "RegisDate":date,
-  //   "RoleID":0
-  // }
   let username = req.body.username
   let password = req.body.password
   let email = req.body.email
@@ -97,7 +89,31 @@ server.post('/user/newuser', function(req, res) {
   con.end()
 });
 
-
+server.post('/admin/product/update/:productId',function(req,res){
+  const mysql = require('./src/mysql')
+  const con = mysql()
+  console.log(req.body)
+  console.log(req.params.productId)
+  const ProductName = req.body.productname
+  const ProductDesc = req.body.productdesc
+  const Quantity = parseFloat(req.body.quantity)
+  const ProductPrice = parseFloat(req.body.price)
+  const ProductImage = req.body.img
+  const CategoryID = req.body.category
+  con.connect(function(err) {
+    if(err) throw err
+    console.log("Connected!");
+  });
+  con.query(`UPDATE Product SET ProductName='${ProductName}',ProductDesc='${ProductDesc}',Quantity=${Quantity},ProductPrice=${ProductPrice},ProductImg='${ProductImage}',Update_at=CURRENT_TIMESTAMP(),CategoryID=${CategoryID} WHERE ProductID = ${req.params.productId}`,function(error, results, fields){
+    if(error){
+      console.log(error.code)
+    }
+    else{
+      console.log('success')
+    }
+  })
+  con.end()
+})
 
 server.post('/admin/product/add',function(req,res){
   const mysql = require('./src/mysql')
@@ -131,6 +147,7 @@ server.post('/admin/product/add',function(req,res){
       })
     }
   })
+  con.end()
 })
 
 // LISTEN PORT 3001
