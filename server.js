@@ -76,30 +76,31 @@ server.post('/admin/product/add',function(req,res){
   const mysql = require('./src/mysql')
   const con = mysql()
   const date = new Date();
-  const product = {
-    "ProductName":req.body.productname,
-    "ProductDesc":req.body.productdesc,
-    "Quantity":req.body.quantity,
-    "ProductPrice":req.body.productprice,
-    "ProductImage":req.body.productimg,
-    "Create_at":date,
-    "Update_at":date,
-    "Status":1,
-    "CategoryID":1
-  }
+  console.log(req.body)
+  // const product = {
+  //   "ProductName":req.body.productname,
+  //   "ProductDesc":req.body.productdesc,
+  //   "Quantity":req.body.quantity,
+  //   "ProductPrice":req.body.productprice,
+  //   "ProductImage":req.body.productimg,
+  //   "Create_at":date,
+  //   "Update_at":date,
+  //   "Status":1,
+  //   "CategoryID":1
+  // }
   
-  con.connect(function(err) {
-    if(err) throw err
-    console.log("Connected!");
-  });
-  con.query('INSERT INTO Product SET ?',product,function (error, results, fields) {
-    if(error){
-      res.send(error.code)
-    }
-    else{
-      res.send('success')
-    }
-  })
+  // con.connect(function(err) {
+  //   if(err) throw err
+  //   console.log("Connected!");
+  // });
+  // con.query('INSERT INTO Product SET ?',product,function (error, results, fields) {
+  //   if(error){
+  //     res.send(error.code)
+  //   }
+  //   else{
+  //     res.send('success')
+  //   }
+  // })
 })
 
 // LISTEN PORT 3001
