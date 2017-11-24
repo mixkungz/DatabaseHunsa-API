@@ -43,6 +43,7 @@ server.post('/user/newuser', function(req, res) {
         res.send(error.code)
       }
       else{
+        console.log('Insert Sucess')
         res.send('success')
       }
     });
