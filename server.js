@@ -250,6 +250,27 @@ server.post('/admin/user/del/:userId',function(req,res){
     }
   })
 })
+server.get('/user/useramout',function(req,res){
+  const mysql = require('./src/mysql')
+  const con = mysql()
+  con.connect(function(err) {
+    if(err) throw err
+    console.log("Connected!");
+  });
+  con.query('SELECT count(*) as useramout FROM User',function(error,results){
+    if(error){
+      console.log(error.code)
+      res.json({
+        status : false,
+        msg:error.code
+      })
+
+    }
+    else{
+      res.send(results)
+    }
+  })
+})
 var app = server.listen(3001, (err) => {
   if (err) throw err
   console.log('> Ready on http://localhost:3001')
