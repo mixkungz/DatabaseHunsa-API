@@ -88,6 +88,27 @@ server.post('/user/newuser', function(req, res) {
   con.end()
 });
 
+
+server.post('/buy', function(req, res) {
+  const mysql = require('./src/mysql')
+  const con = mysql()
+  console.log(req.body)
+  
+  // con.connect(function(err) {
+  //   if(err) throw err
+  //   console.log("Connected!");
+  // });
+  // con.query(`INSERT INTO User (UserName,Password,Firstname,Lastname,Email,RegisDate,RoleID) VALUES ('${username}',password('${password}'),'${email}','${firstname}','${lastname}',CURRENT_TIMESTAMP(),${roleID})`,function (error, results, fields) {
+  //   if(error){
+  //     res.send(error.code)
+  //   }
+  //   else{
+  //     res.send('success')
+  //   }
+  // })
+  // con.end()
+});
+
 server.post('/admin/product/update/:productId',function(req,res){
   const mysql = require('./src/mysql')
   const con = mysql()
@@ -148,8 +169,6 @@ server.post('/user/login',function(req,res){
     }
   })
   con.end()
-  
-
 })
 server.post('/admin/product/del/:productId',function(req,res){
   const mysql = require('./src/mysql')
