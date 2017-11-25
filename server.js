@@ -247,6 +247,19 @@ server.post('/user/address/update/:uid',async function(req,response){
       // }
   // })
 })
+server.get('/product/category/:cat',function(req,res){
+  const mysql = require('./src/mysql')
+  const con = mysql()
+  console.log(req.params.cat)
+  con.connect(function(err) {
+    if(err) throw err
+    console.log("Connected!");
+  });
+  con.query(`SELECT * FROM Product p JOIN Product_Category pc ON p.CategoryID = pc.CategoryID WHERE pc.CategoryName = '${req.params.cat}'`,function(err,results){
+    if(err) throw err
+    res.send(results)
+  })
+})
 server.post('/admin/product/update/:productId',function(req,res){
   const mysql = require('./src/mysql')
   const con = mysql()
