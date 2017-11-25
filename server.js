@@ -6,6 +6,7 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const multer = require('multer')
+const convert = require('convert-callback-to-promise')
 // ----------------------
 //     INITIAL SERVER
 // ----------------------
@@ -31,6 +32,22 @@ server.get('/product/productcat', function(req, res, next) {
       category.push(`${results[i].CategoryName}`)
     }
     res.send(category)
+  })
+  con.end()
+})
+server.get('/province', function(req, res, next) {
+  const mysql = require('./src/mysql')
+  const con = mysql()
+  const province=[];
+  con.connect(function(err) {
+    if(err) throw err
+    console.log("Connected!");
+  });
+  con.query('select * from Province',function(error,results){
+    for(i=0;i<results.length;i++){
+      province.push(`${results[i].ProvinceName}`)
+    }
+    res.send(province)
   })
   con.end()
 })
@@ -62,7 +79,22 @@ server.get('/product/:productId',function(req,res){
   })
   con.end()
 })
-
+server.post('/user/address/:uid',function(req,res){
+  const mysql = require('./src/mysql')
+  const con = mysql()
+  con.connect(function(err) {
+    if(err) throw err
+    console.log("Connected!");
+  });
+  con.query(`select * from Address where UserID=${req.params.uid}`,function(error,results){
+    if(error){
+      console.log(error)
+    }
+      console.log(results)
+      res.send(results)
+  })
+  con.end()
+})
 
 server.post('/user/newuser', function(req, res) {
   const mysql = require('./src/mysql')
@@ -109,6 +141,112 @@ server.post('/buy', function(req, res) {
   // con.end()
 });
 
+server.post('/user/address/update/:uid',async function(req,response){
+  const mysql = require('./src/mysql')
+  const con = mysql()
+  console.log(req.body)
+  console.log(req.params.uid)
+  
+  const addressdetail = req.body.addressdetail
+  const postcode = req.body.postcode
+  const provinceid = req.body.provinceid
+  console.log(addressdetail)
+  console.log(postcode)
+  console.log(provinceid)
+
+
+  con.connect(function(err) {
+    if(err) throw err
+    console.log("Connected!");
+  });
+
+  const result = await con.query(`select * from Address where UserID=${req.params.uid}`, (err, res) => {
+    if(err) throw err
+    console.log(res)
+    console.log(res.length)
+    console.log(typeof res)
+    console.log(typeof res.length)
+
+    if(res.length === 0) {
+      con.query(`INSERT INTO Address (AddressDetail,Postcode,UserID,ProvinceID) VALUES ('${addressdetail}','${postcode}',${req.params.uid},${provinceid})`, (err, res) => {
+        if(err){
+          console.log(err.code)
+          response.send('error')
+        }
+        else{
+          console.log('insert')
+          response.send('success')
+        }
+        
+      })
+    }
+    else if(res.length > 0) {
+      con.query(`UPDATE Address SET AddressDetail = '${addressdetail}' , Postcode = '${postcode}' , ProvinceID=${provinceid} WHERE UserID=${req.params.uid}`,function(error,results){
+        if(err){
+          console.log(err.code)
+          response.send('error')
+        }
+        else{
+          console.log('update')
+          response.send('success')
+        }
+      })
+    } 
+  })
+
+  // con.query(`select * from Address where UserID=${req.params.uid}`,function(error,results){
+    // if(error){
+    //   console.log(error)
+    // }
+    // if (results) {
+    //   console.log(results)
+    // }
+      // console.log(results)
+      // if(results.length == 0){
+      //   console.log('no address')
+      //   await con.query(`INSERT INTO Address (AddressDetail,Postcode,UserID,ProductID) VALUES ('${addressdetail}','${postcode}',${req.params.uid},${provinceid})`, function(error,results){
+      //     if(error){
+      //       console.log(error.code)
+      //       res.json({
+      //         status : false,
+      //         msg:error.code
+      //       })
+      
+      //     }
+      //     else{
+      //       console.log('insert')
+      //       res.json({
+      //         status : true,
+      //         msg : 'insert'
+      //       })
+      //     }
+      //   })
+      //   console.log('555555')
+      // }
+      // else{
+      //   console.log('have address')
+      //   await con.query(`UPDATE Address SET AddressDetail = '${addressdetail}' , Postcode = '${postcode}' , ProductID=${provinceid} WHERE UserID=${req.params.uid}`,function(error,results){
+          // if(error){
+          //   console.log(error.code)
+          //   res.json({
+          //     status : false,
+          //     msg:error.code
+          //   })
+      
+          // }
+          // else{
+          //   console.log('update')
+          //   res.json({
+          //     status : true,
+          //     msg : 'update'
+          //   })
+          // }
+      //   })
+      //   console.log('666666')
+        
+      // }
+  // })
+})
 server.post('/admin/product/update/:productId',function(req,res){
   const mysql = require('./src/mysql')
   const con = mysql()
