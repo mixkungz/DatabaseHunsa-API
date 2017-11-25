@@ -44,6 +44,8 @@ server.get('/product/all',function(req,res){
   con.query('select * from Product p join Product_Category pc on p.CategoryID = pc.CategoryID',function(error,results){
     res.send(results)
   })
+  con.end()
+  
 })
 server.get('/product/:productId',function(req,res){
   const mysql = require('./src/mysql')
@@ -71,7 +73,6 @@ server.post('/user/newuser', function(req, res) {
   let firstname = req.body.firstname
   let lastname = req.body.lastname
   let roleID = 0
-  console.log(date)
   con.connect(function(err) {
     if(err) throw err
     console.log("Connected!");
@@ -120,6 +121,36 @@ server.post('/admin/product/update/:productId',function(req,res){
   })
   con.end()
 })
+server.post('/user/login',function(req,res){
+  const mysql = require('./src/mysql')
+  const con = mysql()
+  console.log(req.body)
+  con.connect(function(err) {
+    if(err) throw err
+    console.log("Connected!");
+  });
+  con.query(`SELECT * FROM User u WHERE u.Username='${req.body.username}'and u.Password=password('${req.body.password}')` , function(error,results){
+    if(error){
+      console.log(error.code)
+      res.json({
+        status : false,
+        msg:err.code
+      })
+
+    }
+    else{
+      if(!results[0]){
+        res.send(false)
+      }
+      else{
+        res.send(results)
+      }
+    }
+  })
+  con.end()
+  
+
+})
 server.post('/admin/product/del/:productId',function(req,res){
   const mysql = require('./src/mysql')
   const con = mysql()
@@ -143,6 +174,8 @@ server.post('/admin/product/del/:productId',function(req,res){
       })
     }
   })
+  con.end()
+  
 })
 server.post('/admin/product/updatestatus/:productId',function(req,res){
   const mysql = require('./src/mysql')
@@ -169,6 +202,8 @@ server.post('/admin/product/updatestatus/:productId',function(req,res){
       })
     }
   })
+  con.end()
+  
 })
 server.post('/admin/product/add',function(req,res){
   const mysql = require('./src/mysql')
@@ -204,6 +239,7 @@ server.post('/admin/product/add',function(req,res){
   })
   con.end()
 })
+
 server.get('/admin/user/alluser',function(req,res){
   const mysql = require('./src/mysql')
   const con = mysql()
@@ -224,6 +260,8 @@ server.get('/admin/user/alluser',function(req,res){
       res.send(results)
     }
   })
+  con.end()
+  
 })
 server.post('/admin/user/del/:userId',function(req,res){
   const mysql = require('./src/mysql')
@@ -249,6 +287,8 @@ server.post('/admin/user/del/:userId',function(req,res){
       })
     }
   })
+  con.end()
+  
 })
 server.get('/user/useramout',function(req,res){
   const mysql = require('./src/mysql')
@@ -270,6 +310,8 @@ server.get('/user/useramout',function(req,res){
       res.send(results)
     }
   })
+  con.end()
+  
 })
 var app = server.listen(3001, (err) => {
   if (err) throw err
