@@ -34,8 +34,6 @@ server.get('/product/productcat', function(req, res, next) {
   })
   con.end()
 })
-
-
 server.get('/product/all',function(req,res){
   const mysql = require('./src/mysql')
   const con = mysql()
@@ -107,14 +105,71 @@ server.post('/admin/product/update/:productId',function(req,res){
   con.query(`UPDATE Product SET ProductName='${ProductName}',ProductDesc='${ProductDesc}',Quantity=${Quantity},ProductPrice=${ProductPrice},ProductImg='${ProductImage}',Update_at=CURRENT_TIMESTAMP(),CategoryID=${CategoryID} WHERE ProductID = ${req.params.productId}`,function(error, results, fields){
     if(error){
       console.log(error.code)
+      res.json({
+        status : false,
+        msg:error.code
+      })
+
     }
     else{
-      console.log('success')
+      res.json({
+        status : true,
+        msg : 'success'
+      })
     }
   })
   con.end()
 })
+server.post('/admin/product/del/:productId',function(req,res){
+  const mysql = require('./src/mysql')
+  const con = mysql()
+  con.connect(function(err) {
+    if(err) throw err
+    console.log("Connected!");
+  });
+  con.query(`DELETE FROM Product WHERE ProductID=${req.params.productId}`,function(error,results){
+    if(error){
+      console.log(error.code)
+      res.json({
+        status : false,
+        msg:error.code
+      })
 
+    }
+    else{
+      res.json({
+        status : true,
+        msg : 'success'
+      })
+    }
+  })
+})
+server.post('/admin/product/updatestatus/:productId',function(req,res){
+  const mysql = require('./src/mysql')
+  const con = mysql()
+  con.connect(function(err) {
+    if(err) throw err
+    console.log("Connected!");
+  });
+  const pid = req.params.productId.substr(0,req.params.productId.length-1)
+  const newstatus = req.params.productId.substr(req.params.productId.length-1)
+  con.query(`UPDATE Product SET StatusID=${newstatus} WHERE ProductID=${pid}`,function(error,results){
+    if(error){
+      console.log(error.code)
+      res.json({
+        status : false,
+        msg:error.code
+      })
+
+    }
+    else{
+      res.json({
+        status : true,
+        msg : 'success'
+      })
+    }
+  })
+})
 server.post('/admin/product/add',function(req,res){
   const mysql = require('./src/mysql')
   const con = mysql()
@@ -149,8 +204,52 @@ server.post('/admin/product/add',function(req,res){
   })
   con.end()
 })
+server.get('/admin/user/alluser',function(req,res){
+  const mysql = require('./src/mysql')
+  const con = mysql()
+  con.connect(function(err) {
+    if(err) throw err
+    console.log("Connected!");
+  });
+  con.query('SELECT UserID,Username , Firstname , Lastname , Email FROM User',function(error,results){
+    if(error){
+      console.log(error.code)
+      res.json({
+        status : false,
+        msg:error.code
+      })
 
-// LISTEN PORT 3001
+    }
+    else{
+      res.send(results)
+    }
+  })
+})
+server.post('/admin/user/del/:userId',function(req,res){
+  const mysql = require('./src/mysql')
+  const con = mysql()
+  console.log(req.params.userId)
+  con.connect(function(err) {
+    if(err) throw err
+    console.log("Connected!");
+  });
+  con.query(`DELETE FROM User WHERE UserID=${req.params.userId}`,function(error,results){
+    if(error){
+      console.log(error.code)
+      res.json({
+        status : false,
+        msg:error.code
+      })
+
+    }
+    else{
+      res.json({
+        status : true,
+        msg : 'success'
+      })
+    }
+  })
+})
 var app = server.listen(3001, (err) => {
   if (err) throw err
   console.log('> Ready on http://localhost:3001')
