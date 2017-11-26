@@ -109,7 +109,7 @@ server.post('/user/newuser', function(req, res) {
     if(err) throw err
     console.log("Connected!");
   });
-  con.query(`INSERT INTO User (UserName,Password,Firstname,Lastname,Email,RegisDate,RoleID) VALUES ('${username}',password('${password}'),'${email}','${firstname}','${lastname}',CURRENT_TIMESTAMP(),${roleID})`,function (error, results, fields) {
+  con.query(`INSERT INTO User (UserName,Password,Firstname,Lastname,Email,RegisDate,RoleID) VALUES ('${username}',password('${password}'),'${firstname}','${lastname}','${email}',CURRENT_TIMESTAMP(),${roleID})`,function (error, results, fields) {
     if(error){
       res.send(error.code)
     }
