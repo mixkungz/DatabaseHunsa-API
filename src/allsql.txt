@@ -1,0 +1,18 @@
+select * from Product_Category
+select * from Province
+select * from Product p join Product_Category pc on p.CategoryID = pc.CategoryID
+select * from Product where ProductID=${req.params.productId}
+select * from Address where UserID=${req.params.uid}
+INSERT INTO User (UserName,Password,Firstname,Lastname,Email,RegisDate,RoleID) VALUES ('${username}',password('${password}'),'${firstname}','${lastname}','${email}',CURRENT_TIMESTAMP(),${roleID})
+select * from Address where UserID=${req.params.uid}
+INSERT INTO Address (AddressDetail,Postcode,UserID,ProvinceID) VALUES ('${addressdetail}','${postcode}',${req.params.uid},${provinceid})
+UPDATE Address SET AddressDetail = '${addressdetail}' , Postcode = '${postcode}' , ProvinceID=${provinceid} WHERE UserID=${req.params.uid}
+SELECT * FROM Product p JOIN Product_Category pc ON p.CategoryID = pc.CategoryID WHERE pc.CategoryName = '${req.params.cat}'
+UPDATE Product SET ProductName='${ProductName}',ProductDesc='${ProductDesc}',Quantity=${Quantity},ProductPrice=${ProductPrice},ProductImg='${ProductImage}',Update_at=CURRENT_TIMESTAMP(),CategoryID=${CategoryID} WHERE ProductID = ${req.params.productId}
+SELECT * FROM User u WHERE u.Username='${req.body.username}'and u.Password=password('${req.body.password}')
+DELETE FROM Product WHERE ProductID=${req.params.productId}
+UPDATE Product SET StatusID=${newstatus} WHERE ProductID=${pid}
+INSERT INTO Product (ProductName,ProductDesc,Quantity,ProductPrice,ProductImg,Create_at,Update_at,StatusID,CategoryID) VALUES ('${ProductName}','${ProductDesc}',${Quantity},${ProductPrice},'${ProductImage}',CURRENT_TIMESTAMP(),CURRENT_TIMESTAMP(),1,${CategoryID})
+SELECT UserID,Username , Firstname , Lastname , Email FROM User
+DELETE FROM User WHERE UserID=${req.params.userId}
+SELECT count(*) as useramout FROM User

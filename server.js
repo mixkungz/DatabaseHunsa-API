@@ -64,6 +64,25 @@ server.get('/product/all',function(req,res){
   con.end()
   
 })
+server.get('/admin/total',function(req,res){
+  const mysql = require('./src/mysql')
+  const con = mysql()
+  con.connect(function(err) {
+    if(err) throw err
+    console.log("Connected!");
+  });
+  con.query('SELECT * FROM Orders',function(error,results){
+    let total = 0;
+    for(i=0;i<results.length;i++){
+      total += results[i].Total
+    }
+
+    res.send({data: total})
+    
+  })
+  con.end()
+  
+})
 server.get('/product/:productId',function(req,res){
   const mysql = require('./src/mysql')
   const con = mysql()
@@ -121,24 +140,19 @@ server.post('/user/newuser', function(req, res) {
 });
 
 
-server.post('/buy', function(req, res) {
+server.get('/admin/allorder', function(req, res) {
   const mysql = require('./src/mysql')
   const con = mysql()
-  console.log(req.body)
-  
-  // con.connect(function(err) {
-  //   if(err) throw err
-  //   console.log("Connected!");
-  // });
-  // con.query(`INSERT INTO User (UserName,Password,Firstname,Lastname,Email,RegisDate,RoleID) VALUES ('${username}',password('${password}'),'${email}','${firstname}','${lastname}',CURRENT_TIMESTAMP(),${roleID})`,function (error, results, fields) {
-  //   if(error){
-  //     res.send(error.code)
-  //   }
-  //   else{
-  //     res.send('success')
-  //   }
-  // })
-  // con.end()
+  con.connect(function(err) {
+    if(err) throw err
+    console.log("Connected!");
+  });
+  con.query(`SELECT o.OrderID , u.Firstname , u.Lastname , p.ProductName,od.Price,od.QtyOfProduct FROM Orders o Join Order_Detail od on o.OrderID = od.OrderID Join User u on u.UserID = o.UserID Join Product p on od.ProductID = p.ProductID`,function(err,results){
+    if(err) throw err
+    res.send(results)
+  })
+
+
 });
 
 server.post('/user/address/update/:uid',async function(req,response){
