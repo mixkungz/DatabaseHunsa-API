@@ -28,9 +28,19 @@ server.get('/product/productcat', function(req, res, next) {
     console.log("Connected!");
   });
   con.query('select * from Product_Category',function(error,results){
+    console.log(results)
     for(i=0;i<results.length;i++){
-      category.push(`${results[i].CategoryName}`)
+      if(i==0){
+        category.push(`${results[1].CategoryName}`)
+      }
+      else if(i==1){
+        category.push(`${results[0].CategoryName}`)
+      }
+      else{
+        category.push(`${results[i].CategoryName}`)
+      }
     }
+    console.log(category)
     res.send(category)
   })
   con.end()
@@ -71,14 +81,9 @@ server.get('/admin/total',function(req,res){
     if(err) throw err
     console.log("Connected!");
   });
-  con.query('SELECT * FROM Orders',function(error,results){
-    let total = 0;
-    for(i=0;i<results.length;i++){
-      total += results[i].Total
-    }
-
-    res.send({data: total})
-    
+  con.query('SELECT sum(total) as total FROM Orders',function(error,results){
+    console.log(results)
+    res.send(results)
   })
   con.end()
   
@@ -94,7 +99,7 @@ server.get('/product/:productId',function(req,res){
     if(error){
       console.log(error)
     }
-    res.send(results)
+    res.send(results) 
   })
   con.end()
 })
